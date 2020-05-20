@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta charset="utf-8"/>
+<html>
+<head>
+<title> Calculo de tolerâcia dimensional</title>
+  <meta name="description" content="Site para cálculo de tolerâcia para furos e eixo">
+  <meta name="keywords" content="Calculadora de Tolerância Dimensional, Calculadora de Tolerância,Furo, Eixo, tolerância, cálculo de tolerâcia, metrologia, medidas, cálculo de metrologia, dimensional, tolerância dimensional, ajuste, afastamento superior, afastamento inferior">
+  <meta name="author" content="Carolina Vanuchi">
+<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+  <div class="container">
+    <h2>Insira os valores para calcular a tolerâcia dimensional</h2>
+  </br>
+<form action="#"> 
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="valor_diametro">Selecione a Classe do Eixo:</label>
+          <select class="form-control" id="eixo_select">
+            <option>h5</option>
+            <option>h6</option>
+            <option>h7</option>
+            <option>h8</option>
+            <option>h9</option>
+            <option>h10</option>
+            <option>j5</option>
+            <option>j6</option>
+            <option>j7</option>
+            <option>j8</option>
+          </select>
+          <br>           
+        </div>
+
+        <div class="col-sm-6">          
+            <label for="valor_diametro">Selecione a Classe do Furo:</label>
+            <select class="form-control" id="furo_select">
+              <option>H6</option>
+              <option>H7</option>
+              <option>H8</option>
+              <option>H9</option>
+              <option>H10</option>
+              <option>J6</option>
+              <option>J7</option>
+              <option>J8</option>
+              <option>J9</option>
+              <option>K6</option>
+              <option>K7</option>
+            </select>
+            <br>           
+          </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">        
+          <label for="valor_diametro">Insira o diâmetro:</label>
+          <input type="number" class="form-control" id="valor_diametro">                  
+        </div>  </br>      
+        <div class="col-sm-1">       
+          <button type="button" class="btn btn-primary" value="calcular" onclick="calcular()">Calcular</button>
+      </div>    
+    </div>
+    </br>   
+    
+    <div class="row">      
+      <div class="col-sm-3">        
+        <label for="eixo_afastamento_superior">Eixo Afastamento Superior:</label>
+        <input type="number" class="form-control" id="eixo_afastamento_superior" disabled="true">                  
+      </div>      
+      <div class="col-sm-3">        
+        <label for="eixo_afastamento_inferior">Eixo Afastamento Inferior:</label>
+        <input type="number" class="form-control" id="eixo_afastamento_inferior" disabled="true">                  
+      </div>      
+      <div class="col-sm-3">        
+        <label for="furo_afastamento_superior">Furo Afastamento Superior:</label>
+        <input type="number" class="form-control" id="furo_afastamento_superior" disabled="true">                  
+      </div>            
+      <div class="col-sm-3">        
+          <label for="furo_afastamento_inferior">Furo Afastamento Inferior:</label>
+          <input type="number" class="form-control" id="furo_afastamento_inferior" disabled="true">                  
+      </div>      
+    </div> 
+  <div class="row"> 
+      <div class="col-sm-3">        
+          <label for="tipo_ajuste">Tipo de Ajuste:</label>
+          <input type="text" class="form-control" id="tipo_ajuste" disabled="true">                  
+        </div>   
+        <div class="col-sm-3">        
+            <label for="dimensao_maxima">Dimensão Calculada:</label>
+            <input type="text" class="form-control" id="dimensao_maxima" disabled="true">                  
+        </div>      
+        <div class="col-sm-3">        
+          <label for="dimensao_minima">Dimensão Calculada:</label>
+          <input type="text" class="form-control" id="dimensao_minima" disabled="true">                  
+        </div>          
+      </div>  
+  
+  </br>
+  
+</form>
+  <div class="row">
+    <div class="col-sm-6">
+    <div class="table-responsive">
+      <h2> Tabela de Eixos</h2>
+        <br />
+          <table class="table table-bordered table-striped" id="eixo_tabela">
+            <tr>
+              <th>Dimensão Nominal</th>
+              <th>Classe</th>
+              <th>Afastamento Superior</th>
+              <th>Afastamento Inferior</th>
+            </tr>
+          </table>
+        <br/>
+        </div>
+    </div>
+        <div class="col-sm-6">
+        <h2> Tabela de Furos</h2>
+        <br/>
+        <table class="table table-bordered table-striped" id="furo_tabela">
+          <tr>
+            <th>Dimensão Nominal</th>
+            <th>Classe</th>
+            <th>Afastamento Superior</th>
+            <th>Afastamento Inferior</th>
+          </tr>
+        </table>
+    </div>    
+  </div>
+  </div>
+
+  <script>
+
+  $(document).ready(function(){
+    $.getJSON( "valores_eixo.json", function( data ) {
+      let arquivo_eixo = [];
+      $.each(data["data"], function(key, value){      
+          arquivo_eixo +='<tr>';
+          arquivo_eixo +='<td>'+value.dimensao_nominal_minima+"-"+value.dimensao_nominal_maxima+'</td>';
+          arquivo_eixo +='<td>'+value.classe+'</td>';
+          arquivo_eixo +='<td>'+value.afastamento_superior+'</td>';
+          arquivo_eixo +='<td>'+value.afastamento_inferior+'</td>';
+          arquivo_eixo +='</tr>'
+      });
+      $('#eixo_tabela').append(arquivo_eixo);
+    });
+  });
+  
+  $(document).ready(function(){
+    $.getJSON( "valores_furo.json", function( data ) {
+      let arquivo_eixo = [];
+      $.each(data["data"], function(key, value){      
+          arquivo_eixo +='<tr>';
+            arquivo_eixo +='<td>'+value.dimensao_nominal_minima+"-"+value.dimensao_nominal_maxima+'</td>';
+          arquivo_eixo +='<td>'+value.classe+'</td>';
+          arquivo_eixo +='<td>'+value.afastamento_superior+'</td>';
+          arquivo_eixo +='<td>'+value.afastamento_inferior+'</td>';
+          arquivo_eixo +='</tr>'
+      });
+      $('#furo_tabela').append(arquivo_eixo);
+    });
+  });
+
+  
+ /* $(document).ready(function () {
+		
+    $.getJSON('valores_eixo.json', function (data) {      
+      let options = '';	
+      $.each(data["data"], function (key, val) {
+        options += '<option value="' + val.afastamento_superior+","+val.afastamento_inferior + '">' +
+        val.classe  +'</option>';
+      });					
+      $("#eixo_select").html(options).change();				  
+    });
+  
+  });*/
+
+/*  $(document).ready(function () {
+		
+    $.getJSON('valores_furo.json', function (data) {      
+      let options = '';	
+      $.each(data["data"], function (key, val) {
+        options += '<option value="' + val.afastamento_superior+","+val.afastamento_inferior + 
+        '">'+val.classe +'</option>';
+      });					
+      $("#furo_select").html(options).change();				  
+    });
+  
+  });*/
+  
+  let calcular_tolerancia = function(callback) {    
+    let auxiliar = 0;    
+    document.getElementById('dimensao_maxima').value = "";  
+    document.getElementById('dimensao_minima').value = "";
+    document.getElementById('tipo_ajuste').value = "";    
+
+    let valor_diametro = parseFloat(document.getElementById('valor_diametro').value); 
+    let option_furo = $('#furo_select').find(":selected").text();                  
+    let option_eixo = $('#eixo_select').find(":selected").text();  
+                     
+      $.getJSON('valores_furo.json', function (data) {            
+      document.getElementById('furo_afastamento_inferior').value = "";
+      document.getElementById('furo_afastamento_superior').value = "";
+      $.each(data["data"], function (key, val) {
+        if ((valor_diametro > val.dimensao_nominal_minima) && 
+          ((valor_diametro <= val.dimensao_nominal_maxima)) && 
+          (option_furo == val.classe)){
+            furo_afastamento_superior
+            document.getElementById('furo_afastamento_inferior').value = val.afastamento_inferior;
+            document.getElementById('furo_afastamento_superior').value = val.afastamento_superior;
+            auxiliar = auxiliar + 2;
+            if (auxiliar == 4){
+              return callback(); 
+            } 
+            return false;
+        }      
+      });					    				  
+    });
+
+    $.getJSON('valores_eixo.json', function (data) {            
+      document.getElementById('eixo_afastamento_inferior').value = "";
+      document.getElementById('eixo_afastamento_superior').value = "";
+      $.each(data["data"], function (key, val1) {        
+        if ((valor_diametro > val1.dimensao_nominal_minima) && 
+          ((valor_diametro <= val1.dimensao_nominal_maxima)) && 
+          (option_eixo == val1.classe)){
+            document.getElementById('eixo_afastamento_inferior').value = val1.afastamento_inferior;
+            document.getElementById('eixo_afastamento_superior').value = val1.afastamento_superior;          
+            auxiliar = auxiliar + 2;
+            if (auxiliar == 4){
+              return callback(); 
+            } 
+            return false;            
+        }      
+      });					    				  
+    });                    
+  } 
+
+  let exibir = function(){        
+    
+    let valor_diametro = parseFloat(document.getElementById('valor_diametro').value); 
+    
+    let Dmin = parseFloat( document.getElementById('furo_afastamento_inferior').value);      
+    let dmax = parseFloat( document.getElementById('eixo_afastamento_superior').value);        
+    let resultado_maximo = ((Dmin+valor_diametro) - (dmax+valor_diametro));    
+    document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3);
+    
+    let Dmax = parseFloat( document.getElementById('furo_afastamento_superior').value);      
+    let dmin = parseFloat( document.getElementById('eixo_afastamento_inferior').value);
+    let resultado_minimo = ((Dmax+valor_diametro) - (dmin+valor_diametro));     
+    document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3);
+
+    if ( (resultado_maximo < 0) && (resultado_minimo < 0) ){
+
+      if (resultado_maximo.toFixed(3)>0){
+        document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3) + ", Interferência máxima";
+      }
+      if (resultado_maximo.toFixed(3)<0){
+        document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3) + ", Interferência miníma";
+      }
+
+      if (resultado_minimo.toFixed(3)>0){
+        document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3) + ", Interferência máxima";
+      }
+      if (resultado_minimo.toFixed(3)<0){
+        document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3) + ", Interferência máxima";
+      }
+
+      document.getElementById('tipo_ajuste').value = "Ajuste com interferência";    
+    } else if ( (resultado_maximo >= 0) && (resultado_minimo >= 0) ){
+
+      if (resultado_maximo.toFixed(3)>0){
+        document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3) + ", Folga máxima";
+      }
+      if (resultado_maximo.toFixed(3)<0){
+        document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3) + ", Folga miníma";
+      }
+
+      if (resultado_minimo.toFixed(3)>0){
+        document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3) + ", Folga máxima";
+      }
+      if (resultado_minimo.toFixed(3)<0){
+        document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3) + ", Folga máxima";
+      }
+
+      document.getElementById('tipo_ajuste').value = "Ajuste com folga";    
+    } else {
+      
+      if (resultado_maximo.toFixed(3)>0){
+        document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3) + ", Folga máxima";
+      }
+      if (resultado_maximo.toFixed(3)<0){
+        document.getElementById('dimensao_maxima').value = resultado_maximo.toFixed(3) + ", Interferência máxima";
+      }
+
+      if (resultado_minimo.toFixed(3)>=0){
+        document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3) + ", Folga máxima";
+      }
+      if (resultado_minimo.toFixed(3)<0){
+        document.getElementById('dimensao_minima').value = resultado_minimo.toFixed(3) + ", Interferência máxima";
+      }
+
+      document.getElementById('tipo_ajuste').value = "Ajuste incerto";    
+    }
+  }
+
+  function calcular(){   
+    calcular_tolerancia(exibir);
+  }
+  </script>
+
+  
+</body>
+
+</html>
+
